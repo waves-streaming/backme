@@ -1,7 +1,7 @@
 import { SiteConfig } from "../types";
 
 export const siteConfig: SiteConfig = {
-  name: "backme",
+  name: "Waves",
   description: "A new way to fund your favorite creators.",
   url: "https://backme.dev",
   ogImage: "TODO: Add og image",

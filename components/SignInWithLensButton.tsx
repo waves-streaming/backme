@@ -6,7 +6,7 @@ import {
   useSwitchChain,
 } from "@thirdweb-dev/react";
 import React from "react";
-import { Button } from "./ui/button";
+import { Button } from "@mantine/core";
 import { CHAIN } from "../const/chains";
 import LoginExecuteButton from "./LoginExecuteButton";
 
@@ -33,6 +33,7 @@ export default function SignInWithLensButton() {
   if (wrongNetwork) {
     return (
       <Button
+       variant="gradient" gradient={{ from: 'blue', to: 'cyan', deg: 90 }}
         onClick={() => {
           switchChain(CHAIN.chainId);
         }}

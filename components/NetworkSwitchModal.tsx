@@ -2,15 +2,13 @@ import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
-  DialogTitle,
 } from "./ui/dialog";
 import { useNetworkMismatch, useAddress } from "@thirdweb-dev/react";
 import { useRouter } from "next/router";
 import SignInWithLensButton from "./SignInWithLensButton";
-import { Badge } from "./ui/badge";
 import { useActiveWallet } from "@lens-protocol/react-web";
+import { Center, Container, Group, Paper, Space, Text } from "@mantine/core";
 
 const MODAL_DISPLAY_DELAY = 1000; // Set the delay time in milliseconds
 
@@ -40,52 +38,30 @@ export default function NetworkSwitchModal() {
   }, [address, wrongNetwork, router.pathname, walletInfo?.data]);
 
   return (
+    <>
+    <Space h={55}/>
     <Dialog open={openNetworkModal}>
       <DialogContent>
+        <Container>
+        <Paper shadow="xl" radius="xl" withBorder p="xl">
         <DialogHeader>
-          <DialogTitle>Sign in with Lens</DialogTitle>
-          <DialogDescription className="mt-3 mb-6">
-            Sign in with Lens to continue using Backme.
-          </DialogDescription>
-
-          {/* Four badges connected by horizontal line */}
-          <div
-            className="flex flex-row items-center space-x-4"
-            style={{
-              marginTop: 16,
-              marginBottom: 16,
-            }}
-          >
-            <Badge
-              variant="outline"
-              className={`text-muted-foreground${
-                !address ? " text-foreground" : ""
-              }`}
-            >
-              1
-            </Badge>
-            <div className="border-t-2 border-gray-300 w-16 opacity-10"></div>
-            <Badge
-              variant="outline"
-              className={`text-muted-foreground ${
-                wrongNetwork ? " text-foreground" : ""
-              }`}
-            >
-              2
-            </Badge>
-            <div className="border-t-2 border-gray-300 w-16 opacity-10"></div>
-            <Badge
-              variant="outline"
-              className={`text-muted-foreground ${
-                !walletInfo?.data ? " text-foreground" : ""
-              }`}
-            >
-              3
-            </Badge>
-          </div>
+          <Center>
+        
+      <Text fz="xl" fw={900} fs="italic" variant="gradient" gradient={{ from: 'blue', to: 'cyan', deg: 176 }}>Waves</Text>
+      </Center>
+          <Group justify="center">
+          <Text fw={500} c="dimmed">Connect Your Wallet & Sign in with Lens</Text>
+          </Group>
+         
+ <Space h="xl"/>
+        
           <SignInWithLensButton />
         </DialogHeader>
+       
+        </Paper>
+         </Container>
       </DialogContent>
     </Dialog>
+    </>
   );
 }

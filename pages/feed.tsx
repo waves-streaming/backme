@@ -23,6 +23,7 @@ const Feed: NextPage = () => {
     sortCriteria: PublicationSortCriteria.TopCollected,
   });
 
+  console.log(publicFeed.data)
   const personalizedFeed = useFeed({
     // @ts-ignore: TODO, non-signed in state
     profileId: activeProfile?.data?.id,
@@ -55,7 +56,7 @@ const Feed: NextPage = () => {
             className="ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 mt-8"
           >
             {/* Public feed loading */}
-            {activeProfile &&
+            {
               publicFeed?.loading &&
               Array.from({ length: 10 }).map((_, i) => (
                 <Skeleton
@@ -65,7 +66,7 @@ const Feed: NextPage = () => {
               ))}
 
             {/* Public feed has loaded */}
-            {activeProfile && !publicFeed?.loading && publicFeed?.data && (
+            {!publicFeed?.loading && publicFeed?.data && (
               <InfiniteScroll
                 dataLength={publicFeed?.data?.length || 0}
                 next={() => publicFeed?.next()}
