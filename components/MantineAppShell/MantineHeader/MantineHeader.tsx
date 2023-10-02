@@ -75,7 +75,7 @@ import { ColorSchemeToggle } from '../../ColorSchemeToggle';
     <Tooltip label="Profile" withArrow  position="bottom" offset={3}>
     <ActionIcon
     component={Link}
-    href="/user"
+    href="/dashboard"
       variant="gradient"
       size="xl"
       aria-label="Gradient action icon"

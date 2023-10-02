@@ -21,7 +21,18 @@ import { useRouter } from "next/router";
 import { ActionIcon, AppShell, Container, Group, MantineProvider, Tooltip } from '@mantine/core';
 import { RiArrowRightDoubleLine, RiArrowLeftDoubleLine } from 'react-icons/ri';
 import { useDisclosure } from '@mantine/hooks';
-import { MantineHeader } from '@/components/MantineAppShell/MantineHeader/MantineHeader'
+import { MantineHeader } from '@/components/MantineAppShell/MantineHeader/MantineHeader';
+import {
+  LivepeerConfig,
+  createReactClient,
+  studioProvider,
+} from "@livepeer/react";
+
+const livepeerClient = createReactClient({
+  provider: studioProvider({
+    apiKey: "20d9bc8b-a32b-4259-ba84-2608f5c41721",
+  }),
+});
 const fontSans = FontSans({
   subsets: ["latin"],
   variable: "--font-sans",
@@ -85,7 +96,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           fontHeading.variable
         )}
       >
-        
+        <LivepeerConfig client={livepeerClient}>
             <MantineProvider>
               <ThirdwebProvider
           activeChain={CHAIN}
@@ -125,11 +136,7 @@ function MyApp({ Component, pageProps }: AppProps) {
      </>
    
     ) : 
-    <Tooltip position="right-start" label="Open Sidebars">
-    <ActionIcon style={{position: 'fixed'}} onClick={toggleDesktop} visibleFrom="sm">
-      <RiArrowRightDoubleLine/>
-    </ActionIcon>
-    </Tooltip>}
+   null}
     
     </AppShell.Navbar>
     <AppShell.Aside>
@@ -139,10 +146,13 @@ function MyApp({ Component, pageProps }: AppProps) {
       <AppShell.Main >
       {!desktopOpened ? (
           <Tooltip position="right-start" label="Open Sidebars">
-      <ActionIcon onClick={toggleDesktop} visibleFrom="sm"  >
-        <RiArrowRightDoubleLine/>
-      </ActionIcon>
-      </Tooltip>
+  <div style={{ position: 'fixed' }}>
+    <ActionIcon onClick={toggleDesktop} visibleFrom="sm">
+      <RiArrowRightDoubleLine />
+    </ActionIcon>
+  </div>
+</Tooltip>
+
     ) : null}
    
   
@@ -155,7 +165,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 </LensThirdwebProvider>
         </ThirdwebProvider>
             </MantineProvider>
-          
+      </LivepeerConfig>    
       </main>
     </>
   );

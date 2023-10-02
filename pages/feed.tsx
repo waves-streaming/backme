@@ -1,6 +1,4 @@
 import type { NextPage } from "next";
-import { Nav } from "@/components/Navbar";
-import { TabsList, Tabs, TabsContent, TabsTrigger } from "@/components/ui/tabs";
 import {
   PublicationTypes,
   useActiveProfile,
@@ -9,13 +7,25 @@ import {
   PublicationSortCriteria,
   useFeed,
   FeedEventItemType,
+  useActiveWallet
 } from "@lens-protocol/react-web";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { Skeleton } from "../components/ui/skeleton";
 import Post from "@/components/Post";
+import { useState } from "react";
+import { BsFire } from "react-icons/bs";
+import { GiWaveCrest } from "react-icons/gi";
+import { FaUsers } from "react-icons/fa";
+import { Container, Space, Tabs, rem, Text, Loader, Group, Center } from "@mantine/core";
+import classes from "../styles/Tabs.module.css";
+import SignInWithLensButton from "@/components/SignInWithLensButton";
+import Link from "next/link";
+import Login from "./login";
 
 const Feed: NextPage = () => {
+  const [activeTab, setActiveTab] = useState<string | null>('first');
   const activeProfile = useActiveProfile();
+ const walletInfo = useActiveWallet();
 
   const publicFeed = useExplorePublications({
     limit: 25,
@@ -33,29 +43,46 @@ const Feed: NextPage = () => {
 
   return (
     <>
-      <Nav />
-      <section className="w-full container flex max-w-[64rem] flex-col items-center gap-4 text-center h-screen">
-        <Tabs defaultValue="public" className="w-full md:w-[620px]">
-          <TabsList className="inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground">
-            <TabsTrigger
-              value="feed"
-              className="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
-            >
-              Your Feed
-            </TabsTrigger>
-            <TabsTrigger
-              value="public"
-              className="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
-            >
-              Popular Posts
-            </TabsTrigger>
-          </TabsList>
+      <Tabs value={activeTab} onChange={setActiveTab} variant="outline" radius="md" defaultValue="first">
+        <Container>
+      <Tabs.List justify="center">
+        <Tabs.Tab
+        value="first"
+        >
+          <Center>
+              <BsFire size="1.4rem" />
+            </Center>
+            <Text fz="sm">Popular</Text>
+        </Tabs.Tab>
+        <Tabs.Tab
+        value="second"
+        >
+          <Center>
+              <GiWaveCrest size="1.4rem" />
+            </Center>
+            <Text fz="sm">Waves</Text>
+        </Tabs.Tab>
+        <Tabs.Tab
+        value="third"
 
-          <TabsContent
-            value="public"
-            className="ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 mt-8"
-          >
-            {/* Public feed loading */}
+        >
+           <Center>
+              <FaUsers size="1.4rem" />
+            </Center>
+            <Text fz="sm">Following</Text>
+        </Tabs.Tab>
+      </Tabs.List>
+</Container>
+      <Tabs.Panel value="first"> <Space h="xl"/>
+
+      
+   {walletInfo?.data && !activeProfile?.data &&
+             (
+                 <Container>
+              <Login />
+            </Container>
+              )}
+    {/* Public feed loading */}
             {
               publicFeed?.loading &&
               Array.from({ length: 10 }).map((_, i) => (
@@ -82,9 +109,7 @@ const Feed: NextPage = () => {
                   </>
                 }
                 endMessage={
-                  <p className="text-muted-foreground text-sm my-4">
-                    You&rsquo;ve seen it all!
-                  </p>
+                   <Space h={100}/>
                 }
               >
                 {activeProfile.data &&
@@ -98,14 +123,19 @@ const Feed: NextPage = () => {
                     />
                   ))}
               </InfiniteScroll>
-            )}
-          </TabsContent>
+            )}</Tabs.Panel>
+    <Tabs.Panel value="second"><Space h="xl"/> <Center><Text>Coming Soon</Text></Center><Space h={100}/></Tabs.Panel>
+    <Tabs.Panel value="third"> 
+    <Space h="xl"/>   {/* Public feed loading */}
 
-          <TabsContent
-            className="ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 w-full mt-8"
-            value="feed"
-          >
-            {/* Public feed loading */}
+      {/* Wallet connected, but no Lens profile */}
+           {walletInfo?.data && !activeProfile?.data &&
+             (
+                 <Container>
+              <Login />
+            </Container>
+              )}
+
             {personalizedFeed?.loading &&
               Array.from({ length: 10 }).map((_, i) => (
                 <Skeleton
@@ -131,9 +161,7 @@ const Feed: NextPage = () => {
                   </>
                 }
                 endMessage={
-                  <p className="text-muted-foreground text-sm my-4">
-                    You&rsquo;ve seen it all!
-                  </p>
+                  <Space h={100}/>
                 }
               >
                 {activeProfile.data &&
@@ -145,15 +173,11 @@ const Feed: NextPage = () => {
                     />
                   ))}
               </InfiniteScroll>
-            )}
-          </TabsContent>
-
-          <TabsContent
-            className="ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 mt-8"
-            value="backme"
-          ></TabsContent>
-        </Tabs>
-      </section>
+            )}<Space h={100}/>
+        </Tabs.Panel>
+    </Tabs>
+    
+    
     </>
   );
 };

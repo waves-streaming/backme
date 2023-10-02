@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Nav } from "@/components/Navbar";
 import Post from "@/components/Post";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -22,6 +21,9 @@ import { Input } from "@/components/ui/input";
 import { MediaRenderer } from "@thirdweb-dev/react";
 import { useToast } from "@/components/ui/use-toast";
 import useUpload from "@/lib/useUpload";
+import { Paper, UnstyledButton, Avatar, Spoiler, Tooltip, ActionIcon, Text } from "@mantine/core";
+import { IconScriptPlus, IconScriptMinus, IconRecycle, IconStack3, IconMessageCircle } from "@tabler/icons-react";
+import { Container, Link, Group, Space, Box } from "lucide-react";
 
 const PostPage = () => {
   // Get the post ID from the URL
@@ -53,7 +55,7 @@ const PostPage = () => {
   if (publication?.loading) {
     return (
       <>
-        <Nav />
+       
         <section className="w-full container flex max-w-[720px] flex-col items-center gap-4 text-center h-screen">
           <Skeleton className="h-[120px] animate-pulse bg-muted mt-3 w-full" />
           <Skeleton className="h-[64px] animate-pulse bg-muted mt-3 w-full" />
@@ -65,7 +67,6 @@ const PostPage = () => {
   if (publication?.error) {
     return (
       <>
-        <Nav />
 
         <section className="w-full container flex max-w-[720px] flex-col items-center gap-4 text-center h-screen">
           <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
@@ -75,8 +76,8 @@ const PostPage = () => {
             Sorry, that post doesn&rsquo;t exist, or it has been deleted.
           </p>
 
-          <Button className="mt-2" onClick={() => router.push("/feed")}>
-            Back to Feed
+          <Button className="mt-2" onClick={() => router.push("/")}>
+            Back to Home
           </Button>
         </section>
       </>
@@ -85,7 +86,8 @@ const PostPage = () => {
 
   return (
     <>
-      <Nav />
+    
+
       <section className="w-full container flex max-w-[720px] flex-col items-center gap-4 text-center h-screen">
         {!!publication?.data && activeProfile.data && (
           <Post

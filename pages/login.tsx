@@ -6,7 +6,7 @@ import SignInWithLensButton from "@/components/SignInWithLensButton";
 import { useActiveProfile, useActiveWallet } from "@lens-protocol/react-web";
 import { MediaRenderer } from "@thirdweb-dev/react";
 import { useRouter } from "next/router";
-import { Center, Container, Paper, Text, Button, ActionIcon, UnstyledButton, Space } from "@mantine/core";
+import { Center, Container, Paper, Text, Button, ActionIcon, UnstyledButton, Space, Group, Tooltip } from "@mantine/core";
 
 const Login: NextPage = () => {
   const router = useRouter();
@@ -46,13 +46,15 @@ const Login: NextPage = () => {
                 You don't have a Lens Profile yet. 😞
               </Text>
               </Center>
+
+              
             </>
           )}
               <Space h="md" />
             
                 {walletInfo?.data && activeProfile?.data ? (
                   <Center>
-                  <Button variant="gradient" gradient={{ from: 'blue', to: 'cyan', deg: 90 }} onClick={() => router.push("/feed")}>
+                  <Button variant="gradient" gradient={{ from: 'blue', to: 'cyan', deg: 90 }} onClick={() => router.push("/")}>
                     Continue to Waves
                   </Button>
                   </Center>
@@ -62,37 +64,33 @@ const Login: NextPage = () => {
                   </Center>
                 )}
             
-         
-        <div className="md:flex md:border-l-2 border-[rbga(0,0,0,0.1)] md:pl-4 h-[85%] w-full">
+         <Space h="lg"/>
+        <Group justify="center">
           {/* Wallet connected, has profile on Lens. */}
           {walletInfo?.data && activeProfile?.data && (
-            <div className="flex flex-col w-full justify-start items-center space-y-4">
-              <p className="text-2xl font-semibold">Your Lens Profile</p>
 
-              <div className="flex flex-row outline outline-2 outline-[rgba(255,255,255,.1)] rounded-md p-4 w-full gap-4 items-center">
-                <MediaRenderer
-                  src={
-                    // @ts-ignore
-                    activeProfile?.data?.picture?.original?.url || "/user.png"
-                  }
-                  width="128px"
-                  height="128px"
-                  className="rounded-full h-24 w-24"
-                />
-                <div className="flex flex-col space-y-2">
-                  <p className="text-xl font-semibold">
-                    {activeProfile?.data?.handle}
-                  </p>
-                  <p className="text-md text-muted-foreground">
-                    {activeProfile?.data?.stats.totalFollowers} followers
-                  </p>
-                </div>
-              </div>
-            </div>
+            
+            <>
+            
+            <Center>
+              <Text size="xl" fw={900} fs="italic" variant="gradient" gradient={{ from: 'blue', to: 'cyan', deg: 90 }}>Welcome to Waves</Text>
+              </Center>
+             <Space h="md" />
+                <Center>
+
+                  <Tooltip label="Go to your dashboard">
+            <UnstyledButton component={Link} href='/dashboard'>
+                <Text size="lg" fw={900} fs="italic">Get Started with your first stream!</Text>
+            </UnstyledButton>
+            </Tooltip>
+              </Center>
+              </>
+          
+               
           )}
 
           
-        </div>
+        </Group>
       </Paper>
       </Container>
     </>

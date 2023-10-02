@@ -43,7 +43,7 @@ const ProfilePage = () => {
   if (profile?.error) {
     return (
       <>
-        <Nav />
+       
 
         <section className="w-full container flex max-w-[720px] flex-col items-center gap-4 text-center h-screen">
           <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">

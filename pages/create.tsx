@@ -1,6 +1,4 @@
 import { useState } from "react";
-import { Nav } from "@/components/Navbar";
-import { Button } from "@/components/ui/button";
 import {
   CollectPolicyType,
   ContentFocus,
@@ -8,19 +6,18 @@ import {
   MediaObject,
   ReferencePolicyType,
   useActiveProfile,
+  useActiveWallet,
   useCreateEncryptedPost,
   useCreatePost,
 } from "@lens-protocol/react-web";
 import { useSDK } from "@thirdweb-dev/react";
 import { useToast } from "@/components/ui/use-toast";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
 import fileToMimeType from "@/lib/fileToMimeType";
 import fileToContentFocus from "@/lib/fileToContentFocus";
 import useUpload from "@/lib/useUpload";
 import { useRouter } from "next/router";
+import { Avatar, Paper, Text, Button, Textarea, Space, Group, Container, Checkbox , ActionIcon, FileInput, Center} from "@mantine/core";
+import SignInWithLensButton from "@/components/SignInWithLensButton";
 
 const Create = () => {
   const router = useRouter();
@@ -33,18 +30,19 @@ const Create = () => {
   const [content, setContent] = useState<string>("");
   const [isFollowersOnly, setIsFollowersOnly] = useState<boolean>(false);
 
+  const walletInfo = useActiveWallet();
   const activeProfile = useActiveProfile();
 
-  const createEncrypted = useCreateEncryptedPost({
-    // TODO: forcing sign in state rn (same with sdk beneath it too)
-    publisher: activeProfile?.data!,
-    upload: async (data: unknown) => upload(data),
-  });
+// Check if the user is signed in before creating posts
+const createEncrypted = useCreateEncryptedPost({
+  publisher: activeProfile?.data!, // Pass null or some default value if the user is not signed in
+  upload: async (data: unknown) => upload(data),
+});
 
-  const createUnencrypted = useCreatePost({
-    publisher: activeProfile?.data!,
-    upload: async (data: unknown) => upload(data),
-  });
+const createUnencrypted = useCreatePost({
+  publisher: activeProfile?.data!, // Pass null or some default value if the user is not signed in
+  upload: async (data: unknown) => upload(data),
+});
 
   async function handleCreatePost() {
     if (!sdk || !activeProfile?.data) return;
@@ -152,62 +150,115 @@ const Create = () => {
     }
   }
 
-  return (
-    <>
-      <Nav />
-      <div className="w-full container flex max-w-[64rem] flex-col items-center gap-4 h-screen">
-        <div className="w-full md:w-[720px] p-2 py-4 rounded-sm">
-          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-            Create Post
-          </h1>
 
-          <div className="grid w-full items-center gap-1.5 mt-4 ">
-            <Label htmlFor="content">Content</Label>
+  return (
+    
+    <>
+      <Container>
+
+        
+                {walletInfo?.data && activeProfile?.data ? (
+                   <Paper shadow="xl" withBorder p="xl">
+       
+        <Group>
+                <Avatar
+                  src={
+                    // @ts-ignore
+                    activeProfile?.data?.picture?.original?.url || "/user.png"
+                  }
+                  size="lg"
+                />
+             
+                  <Text c="dimmed" fw={500} size="lg">
+                    {activeProfile?.data?.handle || "anon"} 
+                  </Text>
+</Group>
+        <Space h="md"/>
             <Textarea
               id="content"
-              placeholder="Your post content here..."
-              onChange={(e) => setContent(e.target.value)}
-            />
-          </div>
+      variant="filled"
+      size="md"
+      radius="md"
+      placeholder="Announce your next Stream!"
+      onChange={(e) => setContent(e.target.value)}
+    />
 
-          <div className="grid w-full items-center gap-1.5 mt-6">
-            <Label htmlFor="picture">Media</Label>
-            <Input
-              id="picture"
-              type="file"
-              className="w-full h-20 border-dashed"
-              onChange={(e) => {
-                if (e.target.files) {
-                  setFile(e.target.files[0]);
-                }
-              }}
-            />
-          </div>
+    
+          
+         <Space h="md"/>
 
-          <div className="items-top flex space-x-2 mt-6">
-            <Checkbox
-              id="followers-only"
-              checked={isFollowersOnly}
-              onCheckedChange={() => setIsFollowersOnly(!isFollowersOnly)}
-            />
-            <div className="grid gap-1.5 leading-none">
-              <Label
-                htmlFor="followers-only"
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >
-                Followers Only
-              </Label>
-              <p className="text-sm text-muted-foreground">
-                Only your followers will be able to see this post.
-              </p>
-            </div>
-          </div>
-
-          <Button className="mt-6 w-full" onClick={handleCreatePost}>
+<Group justify="apart">
+<Button variant="gradient"
+      gradient={{ from: 'blue', to: 'cyan', deg: 205 }} onClick={handleCreatePost}>
             Create Post
           </Button>
-        </div>
-      </div>
+<Checkbox
+      defaultChecked
+      label="Followers Only"
+      description="Only your followers will be able to see this post."
+      id="followers-only"
+      size="sm"
+      checked={isFollowersOnly}
+      onChange={() => setIsFollowersOnly(!isFollowersOnly)}
+    />
+          
+
+
+          
+    </Group>    
+      </Paper>
+                ) : (
+                  <Paper shadow="xl" withBorder p="xl">
+       
+        <Group>
+                <Avatar
+                  src={
+                    // @ts-ignore
+                    activeProfile?.data?.picture?.original?.url || "/user.png"
+                  }
+                  size="lg"
+                />
+             
+                  <Text c="dimmed" fw={500} size="lg">
+                    {activeProfile?.data?.handle || "anon"} 
+                  </Text>
+</Group>
+        <Space h="md"/>
+            <Textarea
+              id="content"
+      variant="filled"
+      size="md"
+      radius="md"
+      placeholder="You must Connect your Wallet and have a valid Lens Profile NFT to post!"
+      onChange={(e) => setContent(e.target.value)}
+    />
+
+    
+          
+         <Space h="md"/>
+
+<Group justify="apart">
+<Button disabled variant="gradient"
+      gradient={{ from: 'blue', to: 'cyan', deg: 205}} >
+            Create Post
+          </Button>
+<Checkbox
+      defaultChecked
+      label="Followers Only"
+      description="Only your followers will be able to see this post."
+      id="followers-only"
+      size="sm"
+disabled
+    />
+          
+
+
+          
+    </Group>    
+      </Paper>
+                )}
+       
+      </Container>
     </>
   );
 };
